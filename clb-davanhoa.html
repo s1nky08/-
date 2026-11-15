@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多文化交流クラブ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        jp: ['"M PLUS Rounded 1p"', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite ease-in-out',
+                        'float': 'float 4s ease-in-out infinite',
+                        'float-delayed': 'floatDelayed 5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 25px rgba(236, 72, 153, 0.6), 0 0 50px rgba(147, 51, 234, 0.4)' },
+                            '50%': { boxShadow: '0 0 40px rgba(236, 72, 153, 0.9), 0 0 80px rgba(59, 130, 246, 0.8)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-10px) rotate(1deg)' }
+                        },
+                        floatDelayed: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(12px) rotate(-1deg)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=M+PLUS+Rounded+1p:wght@500;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', 'M PLUS Rounded 1p', sans-serif;
+            background-color: #161618;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        /* Hiệu ứng viền và phóng to khi hover vào từng avatar */
+        .orbit-avatar {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, filter 0.3s ease;
+            will-change: transform, left, top;
+        }
+        .orbit-avatar:hover {
+            transform: translate(-50%, -50%) scale(1.22) !important;
+            z-index: 50 !important;
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.95), 0 0 45px rgba(59, 130, 246, 0.75);
+        }
+    </style>
+</head>
+<body class="bg-[#161618] min-h-screen flex flex-col justify-between selection:bg-pink-500 selection:text-white relative">
+
+    <!-- Header Dark Mode #161618 chuẩn theo ảnh mẫu -->
+    <header class="w-full bg-[#161618] border-b border-white/10 py-4 px-4 sm:px-10 flex items-center justify-center sm:justify-start z-30 shadow-lg">
+        <div class="max-w-6xl w-full mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 sm:space-x-5">
+                <img src="多文化交流クラブ (6).png" alt="Logo 多文化交流クラブ" 
+                     class="w-14 h-14 sm:w-20 sm:h-20 object-contain drop-shadow-[0_0_12px_rgba(168,85,247,0.5)] hover:scale-105 transition-transform" 
+                     onerror="this.src='https://placehold.co/100x100/161618/f472b6?text=Club'">
+                <h1 class="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-widest text-white font-jp drop-shadow-md">
+                    多文化交流クラブ
+                </h1>
+            </div>
+            <div class="flex items-center space-x-3 text-xs sm:text-sm text-gray-300 bg-white/5 border border-white/10 px-4 py-2 rounded-full">
+                <span id="statusDot" class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span id="statusText" class="font-medium">Online</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area: Khung ảnh Collage chuẩn tỷ lệ & Quỹ đạo Avatar -->
+    <main class="flex-grow flex flex-col items-center justify-center px-3 sm:px-6 py-6 sm:py-10 z-10">
+        
+        <!-- Khung chứa ảnh nền collage -->
+        <div id="collageContainer" class="relative w-full max-w-5xl aspect-[16/9] rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.85)] border border-white/15 select-none bg-transparent">
+            
+            <!-- Ảnh nền chính: Ưu tiên tải .png, nếu không có tự động chuyển sang .jpg và không chèn chữ đè lên -->
+            <img id="collageBg" 
+                 src="多文化交流クラブ (4).png" 
+                 alt="" 
+                 class="w-full h-full block object-cover"
+                 onerror="if (!this.dataset.triedJpg) { this.dataset.triedJpg = 'true'; this.src = '多文化交流クラブ (4).jpg'; } else { this.style.opacity = '0'; }">
+
+            <!-- Lớp phủ tối cực nhẹ giúp avatar nổi bật hơn -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 pointer-events-none"></div>
+
+            <!-- Vùng quỹ đạo tròn đặt đúng vị trí Patchouli Knowledge (bên phải ảnh) -->
+            <div id="orbitZone" 
+                 class="absolute pointer-events-none"
+                 style="left: 68.5%; top: 44.5%; width: 34%; aspect-ratio: 1 / 1; transform: translate(-50%, -50%);">
+                
+                <!-- Vòng sáng quỹ đạo mờ tạo chiều sâu thẩm mỹ -->
+                <div class="absolute inset-0 rounded-full border border-dashed border-pink-400/35 shadow-[inset_0_0_30px_rgba(236,72,153,0.15)]"></div>
+
+                <!-- Avatar 1: Cá đeo tai nghe (多文化交流クラブ.png) -->
+                <a href="https://discord.com/users/843088958032445460" target="_blank" rel="noopener noreferrer"
+                   data-angle="-40"
+                   class="orbit-avatar pointer-events-auto absolute w-[30%] aspect-square rounded-full p-[3px] bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-500 shadow-xl group cursor-pointer"
+                   style="transform: translate(-50%, -50%);"
+                   title="Calangdu">
+                    <img src="多文化交流クラブ.png" alt="Cá đeo tai nghe" 
+                         class="w-full h-full rounded-full object-cover border-2 border-[#161618]"
+                         onerror="this.src='https://placehold.co/120x120/1e293b/38bdf8?text=1'">
+                    <span class="absolute -bottom-7 left-1/2 -translate-x-1/2 bg-[#161618]/95 text-cyan-300 text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-cyan-400/50 shadow-lg pointer-events-none">
+                        <i class="fab fa-discord mr-1"></i>Calangdu
+                    </span>
+                </a>
+
+                <!-- Avatar 2: Kasane Teto (多文化交流クラブ (1).png) -->
+                <a href="https://discord.com/users/1159066957019086858" target="_blank" rel="noopener noreferrer"
+                   data-angle="42"
+                   class="orbit-avatar pointer-events-auto absolute w-[30%] aspect-square rounded-full p-[3px] bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-400 shadow-xl group cursor-pointer"
+                   style="transform: translate(-50%, -50%);"
+                   title="Haru">
+                    <img src="多文化交流クラブ (1).png" alt="Kasane Teto" 
+                         class="w-full h-full rounded-full object-cover border-2 border-[#161618]"
+                         onerror="this.src='https://placehold.co/120x120/1e293b/f472b6?text=2'">
+                    <span class="absolute -bottom-7 left-1/2 -translate-x-1/2 bg-[#161618]/95 text-pink-300 text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-pink-400/50 shadow-lg pointer-events-none">
+                        <i class="fab fa-discord mr-1"></i>Haru
+                    </span>
+                </a>
+
+                <!-- Avatar 3: Nhân vật tóc bạc (多文化交流クラブ (2).png) -->
+                <a href="https://discord.com/users/913708628320604160" target="_blank" rel="noopener noreferrer"
+                   data-angle="118"
+                   class="orbit-avatar pointer-events-auto absolute w-[30%] aspect-square rounded-full p-[3px] bg-gradient-to-tr from-slate-300 via-blue-400 to-indigo-600 shadow-xl group cursor-pointer"
+                   style="transform: translate(-50%, -50%);"
+                   title="Kurokimoko">
+                    <img src="多文化交流クラブ (2).png" alt="Nhân vật tóc bạc" 
+                         class="w-full h-full rounded-full object-cover border-2 border-[#161618]"
+                         onerror="this.src='https://placehold.co/120x120/1e293b/93c5fd?text=3'">
+                    <span class="absolute -bottom-7 left-1/2 -translate-x-1/2 bg-[#161618]/95 text-blue-200 text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-blue-400/50 shadow-lg pointer-events-none">
+                        <i class="fab fa-discord mr-1"></i>Kurokimoko
+                    </span>
+                </a>
+
+                <!-- Avatar 4: Bernkastel / Tóc tím (多文化交流クラブ (3).png) -->
+                <a href="https://discord.com/users/897471899091746817" target="_blank" rel="noopener noreferrer"
+                   data-angle="185"
+                   class="orbit-avatar pointer-events-auto absolute w-[30%] aspect-square rounded-full p-[3px] bg-gradient-to-tr from-purple-500 via-fuchsia-500 to-pink-500 shadow-xl group cursor-pointer"
+                   style="transform: translate(-50%, -50%);"
+                   title="Shika">
+                    <img src="多文化交流クラブ (3).png" alt="Bernkastel" 
+                         class="w-full h-full rounded-full object-cover border-2 border-[#161618]"
+                         onerror="this.src='https://placehold.co/120x120/1e293b/c084fc?text=4'">
+                    <span class="absolute -bottom-7 left-1/2 -translate-x-1/2 bg-[#161618]/95 text-purple-300 text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-purple-400/50 shadow-lg pointer-events-none">
+                        <i class="fab fa-discord mr-1"></i>Shika
+                    </span>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- Thanh điều khiển & hướng dẫn nhỏ gọn bên dưới -->
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm text-gray-300">
+            <span class="bg-white/5 border border-white/10 px-4 py-2 rounded-full flex items-center gap-2">
+                <i class="fas fa-mouse-pointer text-pink-400"></i>
+                <span>Di chuột vào avatar để dừng quỹ đạo & click mở hồ sơ Discord</span>
+            </span>
+            <button onclick="showInfoModal()" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-pink-300 border border-pink-500/30 font-medium transition flex items-center gap-2">
+                <i class="fas fa-info-circle"></i>
+                <span>Giới thiệu</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Modal for Info -->
+    <div id="infoModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-[#1e1e24] p-6 sm:p-8 rounded-2xl max-w-md w-full relative border border-pink-500/30 shadow-2xl">
+            <h3 class="text-xl font-bold text-pink-400 mb-3 font-jp">多文化交流クラブ</h3>
+            <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                kết bạn với tụi tui ik mà TwT
+            </p>
+            <button onclick="hideInfoModal()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-medium hover:opacity-90 transition shadow-lg">
+                Đóng
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full py-4 text-center text-xs text-gray-500 z-10 border-t border-white/5">
+        &copy; 2026 多文化交流クラブ. All rights reserved.
+    </footer>
+
+    <script>
+        // Điều khiển chuyển động quỹ đạo mượt mà bằng requestAnimationFrame
+        document.addEventListener('DOMContentLoaded', () => {
+            const avatars = Array.from(document.querySelectorAll('.orbit-avatar'));
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+
+            // Góc khởi tạo ban đầu khớp vị trí trên ảnh mẫu (tính theo độ)
+            const baseAngles = avatars.map(el => parseFloat(el.dataset.angle) || 0);
+            let currentRotation = 0; // Góc quay cộng thêm (độ)
+            let isPaused = false;
+            let lastTime = performance.now();
+
+            // Tốc độ xoay (độ / giây) - nhẹ nhàng, mượt mà
+            const speedDegPerSec = 24;
+            // Bán kính quỹ đạo tính theo % kích thước khung orbitZone (tâm là 50%, 50%)
+            const radiusPercent = 43;
+
+            function updatePositions() {
+                avatars.forEach((avatar, idx) => {
+                    const angleRad = ((baseAngles[idx] + currentRotation) * Math.PI) / 180;
+                    const x = 50 + radiusPercent * Math.cos(angleRad);
+                    const y = 50 + radiusPercent * Math.sin(angleRad);
+                    avatar.style.left = `${x}%`;
+                    avatar.style.top = `${y}%`;
+                });
+            }
+
+            function animate(now) {
+                const dt = (now - lastTime) / 1000;
+                lastTime = now;
+
+                if (!isPaused) {
+                    currentRotation = (currentRotation + speedDegPerSec * dt) % 360;
+                    updatePositions();
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            // Gắn sự kiện dừng/tiếp tục khi di chuột vào hoặc chạm trên mobile
+            avatars.forEach(avatar => {
+                avatar.addEventListener('mouseenter', () => {
+                    isPaused = true;
+                    statusDot.classList.remove('bg-emerald-400', 'animate-ping');
+                    statusDot.classList.add('bg-amber-400');
+                    statusText.textContent = 'click vào để xem';
+                });
+
+                avatar.addEventListener('mouseleave', () => {
+                    isPaused = false;
+                    lastTime = performance.now();
+                    statusDot.classList.remove('bg-amber-400');
+                    statusDot.classList.add('bg-emerald-400', 'animate-ping');
+                    statusText.textContent = 'Online';
+                });
+
+                // Hỗ trợ cảm ứng trên điện thoại/tablet
+                avatar.addEventListener('touchstart', () => {
+                    isPaused = true;
+                    statusDot.classList.remove('bg-emerald-400', 'animate-ping');
+                    statusDot.classList.add('bg-amber-400');
+                    statusText.textContent = 'Đã tạm dừng quỹ đạo';
+                }, { passive: true });
+            });
+
+            // Đặt vị trí ban đầu và khởi chạy vòng lặp animation
+            updatePositions();
+            requestAnimationFrame(animate);
+        });
+
+        function showInfoModal() {
+            document.getElementById('infoModal').classList.remove('hidden');
+        }
+        function hideInfoModal() {
+            document.getElementById('infoModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
